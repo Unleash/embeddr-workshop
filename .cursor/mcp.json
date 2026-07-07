@@ -1,0 +1,11 @@
+{
+  "_comment": "Replace YOUR_PAT with your personal access token (starts with user:), keeping the Bearer prefix. Do not edit the URL: it is the workshop instance's remote MCP endpoint and deliberately ends in /api/admin/mcp.",
+  "mcpServers": {
+    "unleash": {
+      "url": "https://us.app.unleash-hosted.com/uspp0039/api/admin/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_PAT"
+      }
+    }
+  }
+}
