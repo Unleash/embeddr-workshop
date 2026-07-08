@@ -41,8 +41,8 @@ async function post(path, body) {
   }
 }
 
-export async function fetchOpener(matchId) {
-  const data = await post('/opener', { matchId });
+export async function fetchOpener(matchId, variant = 0) {
+  const data = await post('/opener', { matchId, variant });
   return data?.opener ?? null;
 }
 

@@ -11,14 +11,9 @@ export default function Header() {
             find your nearest neighbor
           </span>
         </div>
-        <nav className="flex items-center gap-6 text-sm text-muted">
-          <a href="#" className="text-cream">Matches</a>
-          <a href="#" className="transition-colors hover:text-cream">Messages</a>
-          <a href="#" className="transition-colors hover:text-cream">Settings</a>
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-rose to-lavender font-mono text-xs font-medium text-ink">
-            U
-          </span>
-        </nav>
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-rose to-lavender font-mono text-xs font-medium text-ink">
+          U
+        </span>
       </div>
     </header>
   );

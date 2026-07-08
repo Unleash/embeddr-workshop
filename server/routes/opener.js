@@ -14,7 +14,7 @@ function stablePick(seed, length) {
 
 export default async function openerRoutes(app) {
   app.post('/opener', async (request, reply) => {
-    const { sessionId, matchId } = request.body ?? {};
+    const { sessionId, matchId, variant } = request.body ?? {};
     if (!sessionId) {
       return reply.code(400).send({ error: 'sessionId is required' });
     }
@@ -25,7 +25,12 @@ export default async function openerRoutes(app) {
       return { opener: null };
     }
 
-    const line = openers[stablePick(`${sessionId}:${matchId ?? ''}`, openers.length)];
+    // variant walks the bank from the session's base line, so a reroll is
+    // guaranteed to land on a different line and stays stable across polls.
+    const parsed = Number(variant);
+    const offset = Number.isFinite(parsed) ? Math.abs(Math.trunc(parsed)) : 0;
+    const base = stablePick(`${sessionId}:${matchId ?? ''}`, openers.length);
+    const line = openers[(base + offset) % openers.length];
     return { opener: line };
   });
 }

@@ -2,7 +2,7 @@ import Opener from './Opener.jsx';
 
 export default function ProfileCard({ agent }) {
   return (
-    <article className="group flex flex-col rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-rose/50">
+    <article className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-6 transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1.5 hover:border-rose/50 hover:shadow-[0_16px_40px_-16px_rgba(255,111,165,0.35)]">
       <div className="mb-5 flex items-start justify-between">
         <div
           aria-hidden="true"
