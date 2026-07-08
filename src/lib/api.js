@@ -49,3 +49,8 @@ export async function fetchOpener(matchId, variant = 0) {
 export function reportIck() {
   return post('/ick', {});
 }
+
+export async function fetchQrCode() {
+  const data = await post('/qr-code', {});
+  return data?.qrCode ?? null;
+}
