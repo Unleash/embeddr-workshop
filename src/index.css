@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #17111f;
+  --color-surface: #221a2e;
+  --color-surface-raised: #2b2139;
+  --color-line: #3a2d4d;
+  --color-rose: #ff6fa5;
+  --color-peach: #ffb088;
+  --color-lavender: #b7a6f0;
+  --color-cream: #f5eff7;
+  --color-muted: #9d8fb3;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Outfit', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --animate-card-in: card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  --animate-line-in: line-in 0.35s ease-out;
+  --animate-burst: burst 0.6s ease-out forwards;
+  --animate-plane: plane 0.7s cubic-bezier(0.4, 0, 0.85, 1) forwards;
+  --animate-qr-in: qr-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  --animate-qr-float: qr-float 5s ease-in-out infinite;
+
+  @keyframes card-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes line-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes burst {
+    from {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translate(var(--dx, 0px), var(--dy, -40px)) scale(0.5);
+    }
+  }
+  @keyframes plane {
+    from {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg);
+    }
+    to {
+      opacity: 0;
+      transform: translate(56px, -48px) rotate(-14deg) scale(0.8);
+    }
+  }
+  @keyframes qr-in {
+    from {
+      opacity: 0;
+      transform: translateY(32px) scale(0.85) rotate(4deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes qr-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+}
+
+/* Tailwind v4 resets buttons to cursor: default; every enabled button in
+   this app is clickable and should look it. */
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,12 @@
+{
+  // Replace YOUR_INSTANCE with the Unleash instance you sign in to (from the browser address bar, everything before /projects) and YOUR_PAT with your personal access token (starts with user:), keeping the Bearer prefix. The path must stay exactly /api/admin/mcp.
+  "servers": {
+    "unleash": {
+      "type": "http",
+      "url": "https://YOUR_INSTANCE/api/admin/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_PAT"
+      }
+    }
+  }
+}
