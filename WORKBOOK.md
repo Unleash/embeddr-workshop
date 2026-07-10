@@ -26,8 +26,20 @@ As part of this workshop, you will:
 
 ## Part 1: set up
 
-You need a laptop with Node.js 22 or later, git, an AI coding assistant that
-supports MCP, and the workshop repo cloned.
+You need a laptop with Node.js 22 or later, git, and an AI coding assistant
+that supports MCP.
+
+### Clone the repo
+
+1. Clone the workshop repo and step into it:
+
+   ```bash
+   git clone https://github.com/Unleash/embeddr-workshop.git
+   cd embeddr-workshop
+   ```
+
+2. Open the folder in your preferred editor. You will edit two files during
+   setup and your assistant works in this folder in Part 2.
 
 ### Sign in and find your project
 
@@ -35,8 +47,6 @@ supports MCP, and the workshop repo cloned.
    sign in.
 2. In the Unleash UI, open **Projects** and find the project named after you:
    first name, last initial, for example `Melinda F`.
-3. Open your project and copy its project ID from the URL. The ID is a
-   lowercase slug such as `melinda-f`.
 
 ### Copy the env file
 
@@ -52,12 +62,12 @@ cp server/.env.example server/.env
 
 The app's backend evaluates flags with its own token, scoped to your project.
 
-1. In the Unleash UI, go to **Admin settings**, then **API access**, then
+1. In the Unleash UI, go to your project > **Settings**, then **API access**, then
    **New API token**.
 2. Choose the **Backend** token type.
-3. Scope it to your project and the `development` environment, and create it.
+3. Scope it to the `development` environment, and create it.
 
-<img src="docs/images/create-backend-token.png" width="640" alt="The Create API token dialog with the Backend SDK type, one project, and the development environment selected">
+<img src="docs/images/create-backend-token.png" width="640" alt="The Create project API token dialog with the Backend SDK type and the development environment selected">
 
 4. Copy the token. It looks like `your-project-id:development.xxxx`.
 5. Fill in `server/.env`: paste the token into `UNLEASH_CLIENT_TOKEN`.
@@ -91,34 +101,32 @@ personal access token (PAT).
 
 <img src="docs/images/create-personal-token.png" width="640" alt="The Create personal API token dialog under Profile settings">
 
-2. Open the MCP config file for your assistant. The repo ships one per tool,
-   and most have a dedicated guide if you get stuck:
+2. Open the MCP config file for your assistant. The repo ships one per tool:
 
-   | Assistant | Config file | Guide |
-   |-----------|-------------|-------|
-   | Claude Code | `.mcp.json` | [Claude Code integration](https://docs.getunleash.io/integrate/claude-code) |
-   | Cursor | `.cursor/mcp.json` | [Cursor integration](https://docs.getunleash.io/integrate/cursor) |
-   | VS Code Copilot | `.vscode/mcp.json` | [GitHub Copilot integration](https://docs.getunleash.io/integrate/github-copilot) |
-   | OpenCode | `opencode.json` | [OpenCode integration](https://docs.getunleash.io/integrate/opencode) |
-   | Codex | `.codex/config.toml` | [Unleash MCP server](https://docs.getunleash.io/integrate/mcp) |
-   | Gemini CLI | `.gemini/settings.json` | [Gemini CLI MCP docs](https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md) |
+   | Assistant | Config file |
+   |-----------|-------------|
+   | Claude Code | `.mcp.json` |
+   | Cursor | `.cursor/mcp.json` |
+   | VS Code Copilot | `.vscode/mcp.json` |
+   | OpenCode | `opencode.json` |
+   | Codex | `.codex/config.toml` |
+   | Gemini CLI | `.gemini/settings.json` |
 
-3. Replace the two placeholders: `YOUR_INSTANCE` with the instance you are
-   signed in to, taken from your browser's address bar: everything before
-   `/projects`, for example `us.app.unleash-hosted.com/yourtenant`. Then
-   `YOUR_PAT` with the token you just created, keeping the `Bearer `
-   prefix. Leave the rest of the URL alone: it deliberately ends in
-   `/api/admin/mcp`.
-4. Restart your assistant so it picks up the config.
+3. Replace `YOUR_PAT` with the token you just created, keeping the `Bearer `
+   prefix.
+4. Replace `YOUR_INSTANCE`. This is the same URL you
+   pasted into `UNLEASH_API_URL` in `server/.env`, just with `/admin/mcp`
+   added to the end.
+5. Restart your assistant so it picks up the config.
 
-Note: the linked guides show the local server setup; the config files in
-this repo already point at the workshop's remote MCP endpoint. Do not commit
-your PAT.
+Do not commit the file after filling it in.
 
 **Checkpoint 1.** The app renders at `localhost:5173` and the backend logged
-`unleash: flags synchronized` with no warnings about missing variables. The
-Unleash UI and the running app are the source of truth, here and for the
-rest of this workbook.
+`unleash: flags synchronized` with no warnings about missing variables. Your assistant is connected to the MCP server.
+
+**About the local MCP server.** This workshop uses the remote MCP endpoint
+hosted by the instance, so there is nothing to install. You can also run the
+[Unleash MCP server](https://docs.getunleash.io/integrate/mcp) locally. Check out our docs for [full example setups](https://docs.getunleash.io/integrate/claude-code).
 
 ### If something is off
 
@@ -136,8 +144,7 @@ Finance is more excited. Let's see.
 1. Give your assistant this prompt:
 
    ```text
-   Add an Embeddr Premium upsell. The backend decides whether to serve it,
-   and when it does, the frontend shows a premium call to action in the
+   Add an embeddr premium upsell that shows a premium call to action in the
    match grid inviting the user to subscribe to see more models.
    ```
 
@@ -147,9 +154,6 @@ Finance is more excited. Let's see.
 
    - evaluate the change through the MCP server and decide it needs a
      release flag
-   - ask for your project ID, if you have access to more than one project
-     (if you use the local MCP server, you can configure a default with
-     `UNLEASH_DEFAULT_PROJECT`)
    - create the flag in your project, suffixed with your project ID, like
      `premium-upsell-melinda-f`
    - write the backend code that serves the call to action only when the
@@ -159,11 +163,11 @@ Finance is more excited. Let's see.
    instance. Our repo guidance sets that convention, but you can also enforce
    naming per project inside Unleash.
 
-3. Verify its work in the Unleash UI: your project should show a Premium
+3. Verify its work in the Unleash UI: your project should show a premium
    flag, turned off.
 
-4. Look at the app. No call to action anywhere. The code is there. The
-   feature is not released. That gap is the whole idea.
+4. Look at the app. No call to action anywhere yet. The code is there. The
+   feature is not released.
 
 **Checkpoint 2.** A flag named like `premium-upsell-<your-project-id>`
 exists in your project in the Unleash UI, turned off, and the app shows no
@@ -186,12 +190,12 @@ You do not need to start over.
 
 Time to turn the flag on.
 
-1. In the Unleash UI, open your Premium flag. In the development
+1. In the Unleash UI, open your premium flag. In the development
    environment, add a gradual rollout strategy at 100 percent and turn the
    environment on. Or ask your assistant:
 
    ```text
-   Turn on the Embeddr Premium flag in the development environment with a
+   Turn on the embeddr premium flag in the development environment with a
    gradual rollout at 100 percent.
    ```
 
@@ -204,42 +208,37 @@ Time to turn the flag on.
 4. Turn it off, in the UI or by prompt:
 
    ```text
-   Turn off the Embeddr Premium flag in the development environment.
+   Turn off the embeddr premium flag in the development environment.
    ```
 
 5. Watch the app. Within a few seconds, the call to action is gone. The app
    never stopped running. In real life this is just as instant: no pipeline
    run, no redeploy.
 
-**Checkpoint 3.** You turned your Premium flag off and watched the call to
+**Checkpoint 3.** You turned your premium flag off and watched the call to
 action vanish from the running app within seconds.
 
 ## Part 4 (optional): retire the flag
 
 A release flag like this one is supposed to be temporary: once the feature
 is fully rolled out and stable, the flag becomes debt. Unleash tracks this
-as a lifecycle: a flag moves through Define, Develop, Production, Cleanup,
-and Archived, and the UI shows you where each flag stands. If you have
+as a lifecycle: a flag moves through **Define**, **Develop**, **Production**, **Cleanup**,
+and **Archived**, and the UI shows you where each flag stands. If you have
 time, walk your flag through the end of its life.
 
 <img src="docs/images/flag-lifecycle-stages.png" width="640" alt="A project's flag lifecycle view, counting flags in the Define, Develop, Production, Cleanup, and Archived stages">
 
-1. Open your Premium flag in the Unleash UI and find its lifecycle stage,
-   shown at the top of the flag page. It has been in the develop stage
-   while you toggled it, because only the development environment ever saw
-   traffic. In real life the next steps happen after the feature is rolled
-   out in production; today we take the shortcut.
-2. Turn the flag on in the `production` environment too, then select
-   **Mark completed** in the lifecycle section. The stage moves to
-   cleanup: Unleash is telling you this flag is now a removal backlog item,
-   and it keeps reporting whether any code still calls it.
-
+1. Open your premium flag in the Unleash UI and find its lifecycle stage.
+   It has been in the develop stage while you toggled it, because only the
+   development environment ever saw traffic.
+2. In real life this step comes after the production rollout; today we skip
+   straight to it. Hover over the lifecycle stage and click
+   **Mark ready for cleanup**. The stage moves to cleanup: Unleash is
+   telling you this flag is now a removal backlog item.
 3. The code still checks the flag, so remove that. Ask your assistant:
 
    ```text
-   The Embeddr Premium upsell is fully rolled out and its flag is in the
-   cleanup lifecycle stage. Remove the flag check from the code so the
-   feature is always on.
+   Embeddr Premium is now fully rolled out. Remove the flag from the code.
    ```
 
 4. Archive the flag in the Unleash UI yourself (the MCP server cannot
@@ -260,15 +259,15 @@ view, and the feature still works, now as a permanent part of the app.
 The demo at the start of the session was the same machinery running
 automatically: a safeguard watching a live metric, turning a feature off with
 nobody at the keyboard. What you did by hand is what the safeguard does on its
-own. Runtime control scales from one person with a toggle to a system that
+own. Runtime control scales from one person with a flag to a system that
 protects itself.
 
 ## Where to go next
 
-- Play with the rollout: set your Premium flag's gradual rollout to 20
+- Play with the rollout: set your premium flag's gradual rollout to 20
   percent, then reload the app in a few private browser windows. Each window
   is its own session, and each session sticks to its side of the split.
-- Replace the plain toggle with a release plan: in your flag's development
+- Replace the plain flag with a release plan: in your flag's development
   environment, create a release plan with three milestones, internal only,
   then 10 percent of all users, then 100 percent, and step it through the
   milestones from the UI while the app is open.
