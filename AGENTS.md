@@ -44,3 +44,21 @@ with Unleash and an AI assistant.
   component file in `src/components/`.
 - Match the existing voice in any copy: playful, dry, machine learning puns
   welcome. No exclamation marks, no em dashes.
+
+## Live demo constraints
+
+This repo is demoed in front of an audience: the assistant creating the flag
+and wrapping the code IS the demo. Predictability beats thoroughness.
+
+- The Unleash project is `embeddr-demo`. Pass it as `projectId` on every MCP
+  call. Never stop to ask which project to use.
+- Create the flag off and leave it off. The presenter does the live flip.
+  Never enable an environment, add a strategy, or toggle anything.
+- `npm run dev` is already running (web 5173, api 3001). Never start another
+  server, run a build, or use another port.
+- No screenshots, no installing tooling, no formatters. There is no Prettier
+  config; match the style of the file you are editing.
+- Smallest set of files. Fixed content follows `server/routes/qr.js` and
+  returns inline. Only add to `server/data/` when the copy has variants,
+  like `consent.js`.
+- Verify the off-path only. Report in a few lines, no process narration.
