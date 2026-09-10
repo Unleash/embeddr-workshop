@@ -82,7 +82,7 @@ export default function ThemeToggle() {
       type="button"
       onClick={handleToggle}
       aria-label={`Switch to ${next} mode`}
-      className="animate-line-in grid h-9 w-9 place-items-center rounded-full border border-line text-muted transition-colors hover:border-muted hover:text-cream"
+      className="animate-line-in grid h-11 w-11 place-items-center rounded-full border border-line text-muted transition-colors hover:border-muted hover:text-cream sm:h-9 sm:w-9"
     >
       {theme === 'light' ? <MoonIcon /> : <SunIcon />}
     </button>

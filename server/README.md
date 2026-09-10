@@ -10,7 +10,7 @@ returns; it never talks to Unleash directly.
 |----------|---------|
 | `GET /health` | Liveness check, returns `{ ok: true }` |
 | `POST /opener` | Evaluates `auto-rizz` for the session and returns a canned line or `null` |
-| `POST /ick` | Counts a tap and increments the `ick_count` impact metric |
+| `POST /ick` | Counts a tap and increments the `thumbs_down_count` impact metric |
 
 ## Configuration
 
@@ -35,9 +35,9 @@ with `unleash-client` 6.11.1.
 - Impact metrics are batched with regular SDK metrics and sent on the
   `metricsInterval` cadence. Verified: with `METRICS_INTERVAL=5000`, taps
   appeared in the instance within seconds
-  (`GET /api/admin/impact-metrics?metricName=ick_count&range=hour&aggregationMode=count&source=internal`).
+  (`GET /api/admin/impact-metrics?metricName=thumbs_down_count&range=hour&aggregationMode=count&source=internal`).
 - Naming: the docs define no constraints for internal metric names. Examples
-  use Prometheus-style snake_case, so this service uses `ick_count`.
+  use Prometheus-style snake_case, so this service uses `thumbs_down_count`.
 - Safeguards are configured in the Unleash UI on a flag environment or
   release plan milestone. The safeguard references the metric from a
   dropdown, with an aggregation mode (Rate or Count for counters) and a

@@ -39,7 +39,7 @@ single port. Set `UNLEASH_API_URL`, `UNLEASH_CLIENT_TOKEN`, and
 
 ## The flags
 
-Every flag is evaluated in the backend with the session id or data-region as Unleash context.
+Every flag is evaluated in the backend with the session id as Unleash context.
 
 This demo is designed to work with the workshop Unleash instance. If you do not have
 access to that instance, you can replicate the flags in your own instance
@@ -48,13 +48,16 @@ setup column below.
 
 | Flag | What it does | Setup |
 |------|--------------|-------|
-| `show-QR-code` | Floats the join-the-workshop QR code in a corner of the app. Presenter tooling for the live demo. | Release flag, no targeting. A gradual rollout at 100%. |
-| `regional-consent-test` | The region picked in the header travels as the `data-region` context field; a strategy constraint matches anything starting with `eu-` and serves a consent notice on every card in one of two designs, a classic banner or a minimal chip, A/B tested per EU region. Until the box is ticked the opener stays withheld and Match is disabled. Non-EU regions see nothing. | Release flag plus a custom context field named `data-region` with custom stickiness enabled and no legal values. One strategy: gradual rollout at 100%, a constraint where `data-region` starts with `eu-` (case-insensitive), and two 50/50 strategy variants named `classic` and `minimal`, each with a string payload matching its name and stickiness set to `data-region`. |
-| `auto-rizz` | Serves an opening line on every match card. Ick taps feed the `ick_count` impact metric that a safeguard watches in production. | Release flag, gradual rollout at 100%, default stickiness. The metric and safeguard are optional extras. |
+| `auto-rizz` | Serves an opening line on every match card. Ick taps feed the `thumbs_down_count` impact metric that a safeguard watches in production. | Release flag, gradual rollout at 100%, default stickiness. The metric and safeguard are optional extras. |
+| `premium-upsell` | Adds an Embeddr Premium call to action to the match grid, inviting the user to subscribe to see more models. | Release flag, gradual rollout at 100%, no targeting. |
 | `light-mode` | Puts a theme toggle in the header. The light or dark choice is the user's own, per session; the flag only decides whether the control exists. Flag off hides the toggle and the app repaints dark. | Release flag, gradual rollout at 100%, no targeting. |
+| `match-layout-experiment` | A/B on how matches are browsed: variant `list` keeps the classic card grid, variant `deck` shows one profile at a time with Pass and Match advancing the deck. Match taps feed the `match_count_list` and `match_count_deck` impact metrics, the experiment's success metric. | Experiment flag, gradual rollout at 100% with variants `list` and `deck` at 50/50, default stickiness. |
+| `early-access` | The waitlist. Off shows the coming soon page to everyone; the invite code a visitor types is the Unleash userId. | Release flag. Target a single invite code to let one person in, then a gradual rollout with userId stickiness to open the doors in slices. |
 
 With the flags off, or without an Unleash connection at all, the app is
-plain Embeddr: six cards, no openers, no upsell, no consent info.
+the coming soon page: `early-access` holds everyone at the waitlist until
+it serves their invite code. Behind the gate, the rest of the flags off
+means plain Embeddr: six cards, no openers, no upsell.
 
 ## The pieces
 

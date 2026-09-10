@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { agents } from '../data/agents.js';
-import { fetchConsent } from '../lib/api.js';
+import { fetchLayout, fetchPremium } from '../lib/api.js';
+import MatchDeck from './MatchDeck.jsx';
+import PremiumUpsell from './PremiumUpsell.jsx';
 import ProfileCard from './ProfileCard.jsx';
 
 // Same rhythm as the opener: the backend refreshes flags every 5s, polling
-// every 3s keeps a flag flip or region change visible within seconds. One
-// poll here covers the whole grid; the checkbox state stays per card.
+// every 3s keeps a flag flip visible within seconds. One poll here covers
+// the whole grid.
 const POLL_INTERVAL = 3000;
 
 // Staggered entrance: each card arrives a beat after the previous one.
@@ -19,17 +21,19 @@ const entranceDelays = [
 ];
 
 export default function MatchGrid() {
-  const [consent, setConsent] = useState(null);
+  const [premium, setPremium] = useState(null);
+  const [layout, setLayout] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
 
     const poll = async () => {
-      const next = await fetchConsent();
+      const [nextPremium, nextLayout] = await Promise.all([fetchPremium(), fetchLayout()]);
       if (cancelled) return;
-      // Keep the object stable across polls unless the design changed, so
-      // the cards only re-render on an actual change of arm.
-      setConsent((prev) => (prev?.design === next?.design ? prev : next));
+      // Keep the object stable across polls unless the upsell appeared or
+      // went away, so the cards only re-render on an actual change.
+      setPremium((prev) => (Boolean(prev) === Boolean(nextPremium) ? prev : nextPremium));
+      setLayout(nextLayout);
     };
 
     poll();
@@ -40,13 +44,34 @@ export default function MatchGrid() {
     };
   }, []);
 
+  // The deck variant of match-layout-experiment restructures the whole
+  // section; any other answer, including flag off or a typoed variant name,
+  // is the classic grid.
+  if (layout === 'deck') {
+    return (
+      <section>
+        <MatchDeck agents={agents} />
+        {premium && (
+          <div className="animate-card-in mx-auto mt-6 max-w-sm">
+            <PremiumUpsell premium={premium} />
+          </div>
+        )}
+      </section>
+    );
+  }
+
   return (
-    <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <section className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
       {agents.map((agent, i) => (
         <div key={agent.id} className={`animate-card-in ${entranceDelays[i % entranceDelays.length]}`}>
-          <ProfileCard agent={agent} consent={consent} />
+          <ProfileCard agent={agent} />
         </div>
       ))}
+      {premium && (
+        <div className={`animate-card-in ${entranceDelays[agents.length % entranceDelays.length]}`}>
+          <PremiumUpsell premium={premium} />
+        </div>
+      )}
     </section>
   );
 }

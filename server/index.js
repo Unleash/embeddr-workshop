@@ -8,9 +8,11 @@ import { startUnleash } from './unleash.js';
 import healthRoutes from './routes/health.js';
 import openerRoutes from './routes/opener.js';
 import ickRoutes from './routes/ick.js';
-import qrRoutes from './routes/qr.js';
-import consentRoutes from './routes/consent.js';
 import themeRoutes from './routes/theme.js';
+import premiumRoutes from './routes/premium.js';
+import layoutRoutes from './routes/layout.js';
+import accessRoutes from './routes/access.js';
+import matchRoutes from './routes/match.js';
 
 // Request logging off: with six cards polling every few seconds it drowns
 // the logs that matter during the workshop (sync status, warnings, icks).
@@ -25,9 +27,11 @@ startUnleash(app.log);
 await app.register(healthRoutes);
 await app.register(openerRoutes);
 await app.register(ickRoutes);
-await app.register(qrRoutes);
-await app.register(consentRoutes);
 await app.register(themeRoutes);
+await app.register(premiumRoutes);
+await app.register(layoutRoutes);
+await app.register(accessRoutes);
+await app.register(matchRoutes);
 
 // Deployed mode: one process serves both the API and the frontend build.
 // Registered API routes always win; unknown GET paths fall back to the SPA.

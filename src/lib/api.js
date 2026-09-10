@@ -26,54 +26,12 @@ function initSessionId() {
 
 const sessionId = initSessionId();
 
-// The data residency regions offered in the header. The first one is the
-// default for sessions that have not picked one.
-export const REGIONS = [
-  'us-east-1',
-  'eu-west-1',
-  'eu-west-2',
-  'eu-central-1',
-  'eu-central-2',
-  'eu-north-1',
-  'eu-south-1',
-  'ap-southeast-2',
-];
-
-// The region rides along with the session id on every request, so the
-// backend can hand it to Unleash as context. sessionStorage keeps the
-// choice for the session; a blocked store just means the default region.
-function initRegion() {
-  try {
-    const stored = sessionStorage.getItem('embeddr_region');
-    if (REGIONS.includes(stored)) return stored;
-  } catch {
-    // Storage unavailable: fall through to the default.
-  }
-  return REGIONS[0];
-}
-
-let region = initRegion();
-
-export function getRegion() {
-  return region;
-}
-
-export function setRegion(next) {
-  if (!REGIONS.includes(next)) return;
-  region = next;
-  try {
-    sessionStorage.setItem('embeddr_region', next);
-  } catch {
-    // Storage unavailable: the in-memory value still covers this visit.
-  }
-}
-
 async function post(path, body) {
   try {
     const response = await fetch(`${BACKEND_URL}${path}`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ sessionId, region, ...body }),
+      body: JSON.stringify({ sessionId, ...body }),
     });
     if (!response.ok) return null;
     return await response.json();
@@ -92,9 +50,8 @@ export function reportIck() {
   return post('/ick', {});
 }
 
-export async function fetchConsent() {
-  const data = await post('/consent', {});
-  return data?.consent ?? null;
+export function reportMatch() {
+  return post('/match', {});
 }
 
 export async function fetchThemeToggle() {
@@ -102,7 +59,17 @@ export async function fetchThemeToggle() {
   return data?.themeToggle ?? false;
 }
 
-export async function fetchQrCode() {
-  const data = await post('/qr-code', {});
-  return data?.qrCode ?? null;
+export async function fetchPremium() {
+  const data = await post('/premium', {});
+  return data?.premium ?? null;
+}
+
+export async function fetchLayout() {
+  const data = await post('/layout', {});
+  return data?.layout ?? null;
+}
+
+export async function fetchAccess(inviteCode) {
+  const data = await post('/access', { inviteCode });
+  return data?.access ?? false;
 }

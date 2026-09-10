@@ -58,7 +58,7 @@ and wrapping the code IS the demo. Predictability beats thoroughness.
   server, run a build, or use another port.
 - No screenshots, no installing tooling, no formatters. There is no Prettier
   config; match the style of the file you are editing.
-- Smallest set of files. Fixed content follows `server/routes/qr.js` and
-  returns inline. Only add to `server/data/` when the copy has variants,
-  like `consent.js`.
+- Smallest set of files. Fixed content follows `server/routes/premium.js`
+  and returns inline. Only add to `server/data/` when the copy has
+  variants, like `openers.js`.
 - Verify the off-path only. Report in a few lines, no process narration.
