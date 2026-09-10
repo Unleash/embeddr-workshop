@@ -1,17 +1,54 @@
+import { useEffect, useRef, useState } from 'react';
 import { reportMatch } from '../lib/api.js';
 import Opener from './Opener.jsx';
 
+// Fixed particle vectors for the match burst, same trick as the opener's
+// ick burst: cheap, deterministic, transform-only.
+const HEART_VECTORS = [
+  '[--dx:-22px] [--dy:-40px]',
+  '[--dx:-8px] [--dy:-52px] [animation-delay:40ms]',
+  '[--dx:6px] [--dy:-46px] [animation-delay:20ms]',
+  '[--dx:20px] [--dy:-38px] [animation-delay:60ms]',
+  '[--dx:0px] [--dy:-30px] [animation-delay:80ms]',
+];
+
 // onPass and onMatch only advance the deck; in the grid they are undefined
-// and the buttons stay in place. Every Match tap reports either way, so the
-// layout experiment's success metric counts both universes.
+// and the card keeps its own passed/matched state so the buttons visibly do
+// something. Every first Match tap reports either way, so the layout
+// experiment's success metric counts both universes.
 export default function ProfileCard({ agent, onPass, onMatch }) {
+  const [status, setStatus] = useState('idle');
+  const [burstId, setBurstId] = useState(null);
+  const timer = useRef(null);
+
+  useEffect(() => () => clearTimeout(timer.current), []);
+
+  const passed = !onPass && status === 'passed';
+  const matched = !onMatch && status === 'matched';
+
+  const handlePass = () => {
+    if (onPass) return onPass();
+    setStatus((current) => (current === 'passed' ? 'idle' : 'passed'));
+  };
+
   const handleMatch = () => {
+    if (matched) return;
     reportMatch();
-    onMatch?.();
+    if (onMatch) return onMatch();
+    setStatus('matched');
+    setBurstId((id) => (id ?? 0) + 1);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setBurstId(null), 700);
   };
 
   return (
-    <article className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-5 transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1.5 hover:border-rose/50 hover:shadow-[0_16px_40px_-16px_rgba(255,111,165,0.35)] sm:p-6">
+    <article
+      className={`group flex h-full flex-col rounded-2xl border bg-surface p-5 transition-[transform,box-shadow,border-color,opacity,filter] duration-300 ease-out hover:-translate-y-1.5 sm:p-6 ${
+        matched
+          ? 'border-rose/70 shadow-[0_16px_40px_-16px_rgba(255,111,165,0.45)]'
+          : 'border-line hover:border-rose/50 hover:shadow-[0_16px_40px_-16px_rgba(255,111,165,0.35)]'
+      } ${passed ? 'opacity-50 saturate-50' : ''}`}
+    >
       <div className="mb-4 flex items-start justify-between sm:mb-5">
         <div
           aria-hidden="true"
@@ -52,16 +89,35 @@ export default function ProfileCard({ agent, onPass, onMatch }) {
 
       <div className="mt-auto flex gap-3">
         <button
-          onClick={onPass}
-          className="min-h-11 flex-1 rounded-full border border-line text-sm text-muted transition-colors hover:border-muted hover:text-cream"
+          onClick={handlePass}
+          className={`min-h-11 flex-1 rounded-full border text-sm transition-colors ${
+            passed
+              ? 'border-muted text-cream'
+              : 'border-line text-muted hover:border-muted hover:text-cream'
+          }`}
         >
-          Pass
+          {passed ? 'Passed' : 'Pass'}
         </button>
         <button
           onClick={handleMatch}
-          className="min-h-11 flex-1 rounded-full bg-rose text-sm font-medium text-ink transition-colors hover:bg-peach"
+          disabled={matched}
+          className={`relative min-h-11 flex-1 rounded-full text-sm font-medium text-ink transition-colors ${
+            matched ? 'bg-peach' : 'bg-rose hover:bg-peach'
+          }`}
         >
-          Match
+          {matched ? 'Matched ♥' : 'Match'}
+          {burstId !== null && (
+            <span aria-hidden="true" className="pointer-events-none absolute inset-0">
+              {HEART_VECTORS.map((vec) => (
+                <span
+                  key={vec}
+                  className={`animate-burst absolute top-1/2 left-1/2 -mt-2 -ml-2 text-sm text-rose ${vec}`}
+                >
+                  ♥
+                </span>
+              ))}
+            </span>
+          )}
         </button>
       </div>
     </article>
