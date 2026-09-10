@@ -1,10 +1,10 @@
-import RegionSelect from './RegionSelect.jsx';
+import AvatarQr from './AvatarQr.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Header() {
   return (
-    <header className="border-b border-line">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-5">
+    <header className="sticky top-0 z-40 border-b border-line bg-ink/85 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6 sm:py-5">
         <div className="flex items-baseline gap-2">
           <span className="font-display text-2xl font-semibold text-cream">
             embeddr
@@ -16,10 +16,7 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          <RegionSelect />
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-rose to-lavender font-mono text-xs font-medium text-ink">
-            U
-          </span>
+          <AvatarQr />
         </div>
       </div>
     </header>

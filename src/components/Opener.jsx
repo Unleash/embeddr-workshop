@@ -138,7 +138,7 @@ export default function Opener({ matchId }) {
             <button
               type="button"
               onClick={handleIck}
-              aria-label="Ick"
+              aria-label="Thumbs down"
               className="relative flex min-h-11 min-w-11 items-center justify-center rounded-full border border-rose/40 text-rose transition-colors active:bg-rose/10"
             >
               <ThumbsDownIcon />

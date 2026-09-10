@@ -7,7 +7,14 @@ const REFRESH_INTERVAL = 5000;
 
 // Impact metric for Ick taps. Counters only go up; the safeguard watches the
 // rate over a short window. Reported on the METRICS_INTERVAL cadence.
-const ICK_METRIC = 'ick_count';
+const THUMBS_DOWN_METRIC = 'thumbs_down_count';
+
+// Impact metrics for Match taps, one counter per layout variant so the two
+// lines sit side by side on a graph. Fed by the /match route.
+const MATCH_METRICS = {
+  list: 'match_count_list',
+  deck: 'match_count_deck',
+};
 
 let client = null;
 
@@ -39,7 +46,9 @@ export function startUnleash(log) {
   client.on('warn', (msg) => log.warn(`unleash: ${msg}`));
   client.on('synchronized', () => log.info('unleash: flags synchronized'));
 
-  client.impactMetrics.defineCounter(ICK_METRIC, 'Ick taps on Auto-Rizz openers');
+  client.impactMetrics.defineCounter(THUMBS_DOWN_METRIC, 'Thumbs down taps on Auto-Rizz openers');
+  client.impactMetrics.defineCounter(MATCH_METRICS.list, 'Match taps in the list layout');
+  client.impactMetrics.defineCounter(MATCH_METRICS.deck, 'Match taps in the deck layout');
 
   return client;
 }
@@ -62,7 +71,14 @@ export function getVariant(flagName, context) {
 // Reports one Ick tap to Unleash. A no-op in degraded mode, so the endpoint
 // keeps answering even without an Unleash connection.
 export function recordIck() {
-  if (client) client.impactMetrics.incrementCounter(ICK_METRIC);
+  if (client) client.impactMetrics.incrementCounter(THUMBS_DOWN_METRIC);
+}
+
+// Reports one Match tap under the layout variant that served it. A no-op in
+// degraded mode or for a variant without a counter.
+export function recordMatch(variantName) {
+  const metric = MATCH_METRICS[variantName];
+  if (client && metric) client.impactMetrics.incrementCounter(metric);
 }
 
 export function getClient() {
