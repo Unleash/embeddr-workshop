@@ -36,7 +36,7 @@ export default function PremiumUpsell({ premium }) {
 
       <p className="relative mb-6 text-sm leading-relaxed text-cream/80">{premium.body}</p>
 
-      {premium.cta && status === 'failed' && (
+      {status === 'failed' && (
         <p
           role="alert"
           className="animate-line-in relative mb-3 rounded-lg border border-rose/40 bg-rose/10 px-3 py-2 font-mono text-xs text-rose"
@@ -46,21 +46,15 @@ export default function PremiumUpsell({ premium }) {
         </p>
       )}
 
-      {premium.cta ? (
-        <button
-          onClick={handleUpgrade}
-          disabled={status === 'pending'}
-          className="relative mt-auto min-h-11 w-full rounded-full bg-rose text-sm font-medium text-ink transition-colors hover:bg-peach disabled:animate-pulse disabled:cursor-wait disabled:hover:bg-rose"
-        >
-          {status === 'pending' && 'Contacting payment provider...'}
-          {status === 'failed' && 'Try again'}
-          {status === 'idle' && premium.cta}
-        </button>
-      ) : (
-        <p className="relative mt-auto rounded-lg border border-lavender/40 bg-lavender/10 px-3 py-2 font-mono text-xs text-lavender">
-          {premium.notice}
-        </p>
-      )}
+      <button
+        onClick={handleUpgrade}
+        disabled={status === 'pending'}
+        className="relative mt-auto min-h-11 w-full rounded-full bg-rose text-sm font-medium text-ink transition-colors hover:bg-peach disabled:animate-pulse disabled:cursor-wait disabled:hover:bg-rose"
+      >
+        {status === 'pending' && 'Contacting payment provider...'}
+        {status === 'failed' && 'Try again'}
+        {status === 'idle' && premium.cta}
+      </button>
     </article>
   );
 }

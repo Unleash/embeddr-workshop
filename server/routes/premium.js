@@ -11,17 +11,12 @@ export default async function premiumRoutes(app) {
       return { premium: null };
     }
 
-    const providerDown = isEnabled('payment-provider-killswitch', { sessionId });
-
     return {
       premium: {
         eyebrow: 'embeddr premium',
         headline: 'Six matches is a small sample size',
         body: 'Premium unlocks the rest of the checkpoint. Larger context windows, stranger architectures, one model that only speaks in embeddings.',
-        cta: providerDown ? null : 'Upgrade to Premium',
-        notice: providerDown
-          ? 'Checkout is paused while our payment provider converges. Your matches will wait, they have excellent patience parameters.'
-          : null,
+        cta: 'Upgrade to Premium',
       },
     };
   });
