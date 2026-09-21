@@ -30,9 +30,11 @@ export default function MatchGrid() {
     const poll = async () => {
       const [nextPremium, nextLayout] = await Promise.all([fetchPremium(), fetchLayout()]);
       if (cancelled) return;
-      // Keep the object stable across polls unless the upsell appeared or
-      // went away, so the cards only re-render on an actual change.
-      setPremium((prev) => (Boolean(prev) === Boolean(nextPremium) ? prev : nextPremium));
+      // Keep the object stable across polls unless its contents changed, so
+      // the cards only re-render on an actual change.
+      setPremium((prev) =>
+        JSON.stringify(prev) === JSON.stringify(nextPremium) ? prev : nextPremium
+      );
       setLayout(nextLayout);
     };
 

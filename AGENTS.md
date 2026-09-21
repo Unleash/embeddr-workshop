@@ -61,4 +61,11 @@ and wrapping the code IS the demo. Predictability beats thoroughness.
 - Smallest set of files. Fixed content follows `server/routes/premium.js`
   and returns inline. Only add to `server/data/` when the copy has
   variants, like `openers.js`.
-- Verify the off-path only. Report in a few lines, no process narration.
+- Verify both paths without touching Unleash. Off-path live, then force the
+  on-path locally: hardcode the flag result to true in the route, curl it,
+  and revert the hardcode before finishing.
+- The frontend only shows what survives its polling guards. When a change
+  alters the contents of a payload the frontend already receives, trace the
+  field from route to component and confirm every stability or memo check
+  passes content changes through, not just presence changes.
+- Report in a few lines, no process narration.
