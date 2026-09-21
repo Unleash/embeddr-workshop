@@ -14,14 +14,15 @@ function stablePick(seed, length) {
 
 export default async function openerRoutes(app) {
   app.post('/opener', async (request, reply) => {
-    const { sessionId, matchId, variant } = request.body ?? {};
+    const { sessionId, matchId, variant, userId } = request.body ?? {};
     if (!sessionId) {
       return reply.code(400).send({ error: 'sessionId is required' });
     }
 
     // The session id in the context makes percentage rollouts sticky: a
-    // session that receives Auto-Rizz keeps it as the rollout climbs.
-    if (!isEnabled('auto-rizz', { sessionId })) {
+    // session that receives Auto-Rizz keeps it as the rollout climbs. The
+    // user id, when present, lets a constraint target a person.
+    if (!isEnabled('auto-rizz', { sessionId, ...(userId && { userId }) })) {
       return { opener: null };
     }
 

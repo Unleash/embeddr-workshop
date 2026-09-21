@@ -26,12 +26,27 @@ function initSessionId() {
 
 const sessionId = initSessionId();
 
+// Optional identity: visiting with ?user=mel tags this browser with a
+// userId, so strategies can target a person by constraint instead of a
+// random session. Persisted the same way as the session id.
+function initUserId() {
+  const fromQuery = new URLSearchParams(window.location.search).get('user');
+  if (fromQuery) {
+    document.cookie = `embeddr_user=${fromQuery}; path=/; max-age=86400; SameSite=Lax`;
+    return fromQuery;
+  }
+  const match = document.cookie.match(/(?:^|; )embeddr_user=([^;]+)/);
+  return match ? match[1] : null;
+}
+
+const userId = initUserId();
+
 async function post(path, body) {
   try {
     const response = await fetch(`${BACKEND_URL}${path}`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ sessionId, ...body }),
+      body: JSON.stringify({ sessionId, ...(userId && { userId }), ...body }),
     });
     if (!response.ok) return null;
     return await response.json();
