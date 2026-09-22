@@ -74,11 +74,6 @@ export async function fetchThemeToggle() {
   return data?.themeToggle ?? false;
 }
 
-export async function fetchPremium() {
-  const data = await post('/premium', {});
-  return data?.premium ?? null;
-}
-
 export async function fetchLayout() {
   const data = await post('/layout', {});
   return data?.layout ?? null;
