@@ -30,10 +30,25 @@ with Unleash and an AI assistant.
   from `server/unleash.js`, passing `{ sessionId }` as context, and return
   the feature data or null. The frontend renders what it receives and
   renders nothing when the field is null.
-- Manage flags through the connected Unleash MCP tools, not by calling the
-  Unleash API directly.
+- Every change in this repo runs through the Unleash MCP server, not the
+  Unleash API or UI. Start with `evaluate_change` for a risk read, reuse
+  any flag `detect_flag` surfaces, create new ones with `create_flag`, and
+  guard code with `wrap_change`. Retire flags with `cleanup_flag`.
+- Communicate the tool trail: in the final report, name each Unleash MCP
+  tool that was called and what it did. The audience follows the demo
+  through those calls.
 - Naming: kebab-case, descriptive, scoped to the feature.
 - New user-facing features ship behind a `release` flag, off by default.
+
+## Payment provider
+
+- `server/routes/payment.js` is Embeddr's payment provider, and it is down
+  on purpose. POST `/payment` takes a `sessionId`, waits about a second,
+  and returns a 502. The malfunction is part of the demo script, so never
+  fix it, stub a success path, or route around it.
+- Embeddr Premium is intentionally absent from this codebase. It gets vibe
+  coded live during a demo, behind a release flag, with its upgrade flow
+  charging through POST `/payment`.
 
 ## Conventions
 
@@ -58,14 +73,17 @@ and wrapping the code IS the demo. Predictability beats thoroughness.
   server, run a build, or use another port.
 - No screenshots, no installing tooling, no formatters. There is no Prettier
   config; match the style of the file you are editing.
-- Smallest set of files. Fixed content follows `server/routes/premium.js`
-  and returns inline. Only add to `server/data/` when the copy has
-  variants, like `openers.js`.
-- Verify both paths without touching Unleash. Off-path live, then force the
-  on-path locally: hardcode the flag result to true in the route, curl it,
-  and revert the hardcode before finishing.
+- Smallest set of files. Fixed content returns inline from the route. Only
+  add to `server/data/` when the copy has variants, like `openers.js`.
+- Verification is the presenter's job. When confident the change works,
+  finish and hand it over: the presenter flips the flag and checks the
+  browser. At most one quick curl of the live path when genuinely unsure.
+  Never hardcode a flag result to test the other path.
+- Build from the current working tree only. No git history digging, no
+  resurrecting deleted implementations; each demo run is written fresh.
 - The frontend only shows what survives its polling guards. When a change
   alters the contents of a payload the frontend already receives, trace the
   field from route to component and confirm every stability or memo check
   passes content changes through, not just presence changes.
-- Report in a few lines, no process narration.
+- Report in a few lines, naming the Unleash MCP tools used, no process
+  narration.

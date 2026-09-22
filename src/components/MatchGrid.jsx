@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { agents } from '../data/agents.js';
-import { fetchLayout, fetchPremium } from '../lib/api.js';
+import { fetchLayout } from '../lib/api.js';
 import MatchDeck from './MatchDeck.jsx';
-import PremiumUpsell from './PremiumUpsell.jsx';
 import ProfileCard from './ProfileCard.jsx';
 
 // Same rhythm as the opener: the backend refreshes flags every 5s, polling
@@ -21,20 +20,14 @@ const entranceDelays = [
 ];
 
 export default function MatchGrid() {
-  const [premium, setPremium] = useState(null);
   const [layout, setLayout] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
 
     const poll = async () => {
-      const [nextPremium, nextLayout] = await Promise.all([fetchPremium(), fetchLayout()]);
+      const nextLayout = await fetchLayout();
       if (cancelled) return;
-      // Keep the object stable across polls unless its contents changed, so
-      // the cards only re-render on an actual change.
-      setPremium((prev) =>
-        JSON.stringify(prev) === JSON.stringify(nextPremium) ? prev : nextPremium
-      );
       setLayout(nextLayout);
     };
 
@@ -53,11 +46,6 @@ export default function MatchGrid() {
     return (
       <section>
         <MatchDeck agents={agents} />
-        {premium && (
-          <div className="animate-card-in mx-auto mt-6 max-w-sm">
-            <PremiumUpsell premium={premium} />
-          </div>
-        )}
       </section>
     );
   }
@@ -69,11 +57,6 @@ export default function MatchGrid() {
           <ProfileCard agent={agent} />
         </div>
       ))}
-      {premium && (
-        <div className={`animate-card-in ${entranceDelays[agents.length % entranceDelays.length]}`}>
-          <PremiumUpsell premium={premium} />
-        </div>
-      )}
     </section>
   );
 }
