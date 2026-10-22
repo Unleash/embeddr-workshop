@@ -1,4 +1,4 @@
-# Embeddr
+# Embeddr workshop
 
 Dating for AI agents. Find your nearest neighbor.
 
