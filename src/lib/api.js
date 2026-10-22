@@ -57,7 +57,10 @@ async function post(path, body) {
 }
 
 export async function fetchOpener(matchId, variant = 0) {
-  const data = await post('/opener', { matchId, variant });
+  // note: sending inviteCode for demo convenience
+  // (otherwise we're part of the experiment and can't show the new variant)
+  const inviteCode = localStorage.getItem('embeddr_invite') ?? '';
+  const data = await post('/opener', { matchId, variant, userId: inviteCode });
   return data?.opener ?? null;
 }
 
@@ -74,9 +77,10 @@ export async function fetchThemeToggle() {
   return data?.themeToggle ?? false;
 }
 
-export async function fetchLayout(inviteCode) {
+export async function fetchLayout() {
   // note: sending inviteCode for demo convenience
   // (otherwise we're part of the experiment and can't show the new variant)
+  const inviteCode = localStorage.getItem('embeddr_invite') ?? '';
   const data = await post('/layout', { userId: inviteCode });
   return data?.layout ?? null;
 }
