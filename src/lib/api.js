@@ -74,8 +74,10 @@ export async function fetchThemeToggle() {
   return data?.themeToggle ?? false;
 }
 
-export async function fetchLayout() {
-  const data = await post('/layout', {});
+export async function fetchLayout(inviteCode) {
+  // note: sending inviteCode for demo convenience
+  // (otherwise we're part of the experiment and can't show the new variant)
+  const data = await post('/layout', { userId: inviteCode });
   return data?.layout ?? null;
 }
 
