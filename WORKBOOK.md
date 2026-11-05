@@ -124,9 +124,25 @@ Do not commit the file after filling it in.
 **Checkpoint 1.** The app renders at `localhost:5173` and the backend logged
 `unleash: flags synchronized` with no warnings about missing variables. Your assistant is connected to the MCP server.
 
+**About the MCP version.** This demo uses the MCP v1 specification and the
+tools from [Unleash MCP v0.5.0](https://github.com/Unleash/unleash-mcp/tree/v0.5.0).
+Make sure your Unleash instance has MCP v1 enabled for its remote MCP
+server, or the tool names and behavior may not match the workbook.
+
 **About the local MCP server.** This workshop uses the remote MCP endpoint
 hosted by the instance, so there is nothing to install. You can also run the
-[Unleash MCP server](https://docs.getunleash.io/integrate/mcp) locally. Check out our docs for [full example setups](https://docs.getunleash.io/integrate/claude-code).
+[Unleash MCP server](https://docs.getunleash.io/integrate/mcp) locally. Pin
+it to the release this demo targets rather than `@latest`:
+
+```bash
+claude mcp add unleash \
+    --env UNLEASH_BASE_URL=YOUR_INSTANCE \
+    --env UNLEASH_PAT=YOUR_PAT \
+    -- npx -y @unleash/mcp@0.5.0 --log-level error
+```
+
+Check out our docs for [full example setups](https://docs.getunleash.io/integrate/claude-code),
+and swap `@latest` for `@0.5.0` in any of them.
 
 ### If something is off
 
